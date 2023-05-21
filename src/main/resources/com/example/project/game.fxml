@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="335.0" spacing="20.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project.GameController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <Label fx:id="text" alignment="CENTER" contentDisplay="CENTER" prefHeight="242.0" prefWidth="272.0" text="Text">
+      <font>
+         <Font size="15.0" />
+      </font>
+   </Label>
+
+    <Button fx:id="opA" onAction="#onOpAClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opA" textFill="WHITE" />
+   <Button fx:id="opB" layoutX="116.0" layoutY="424.0" onAction="#onOpBClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opB" textFill="WHITE" />
+   <Button fx:id="opC" layoutX="116.0" layoutY="451.0" onAction="#onOpCClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opC" textFill="WHITE" />
+</VBox>
