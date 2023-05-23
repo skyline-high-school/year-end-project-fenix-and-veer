@@ -4,8 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,6 +18,9 @@ public class WelcomeController {
     private Button startButton;
     @FXML
     private Button helpButton;
+    @FXML
+    private VBox vbox;
+    private Button b;
 
     @FXML
     protected void onStartButtonClick() throws IOException {
@@ -28,10 +31,25 @@ public class WelcomeController {
         stage.show();
     }
 
-    public void onHelpButtonClick(ActionEvent event) {
-        helpPane.setContentText("This is a choose-your-own-adventure style survival game. " +
-                "You will face a number of scenarios, or \"encounters\", with many possible responses. Simply select the reaction you want to go with. Your choices matter! Now, go survive!");
+    public void onHelpButtonClick(ActionEvent event) throws IOException {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle()
+
+
+        /* helpPane.setContentText("This is a choose-your-own-adventure style survival game. " +
+                "You will face a number of scenarios, or \"encounters\", with many possible responses. " +
+                "Simply select the reaction you want to go with. Your choices matter! Now, go survive!");
         helpPane.setVisible(true);
+
+
+
+        AlertPane helpPane = new AlertPane(helpButton, "Help", "This is a choose-your-own-adventure style survival game. " +
+                "You will face a number of scenarios, or \"encounters\", with many possible responses. " +
+                "Simply select the reaction you want to go with. Your choices matter! Now, go survive!");
+
+         */
+
     }
 
 }
