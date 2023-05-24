@@ -15,7 +15,6 @@ public class GameController {
 
     @FXML
     protected void onOpAClick() throws IOException {
-        //loads learn mode scene from fxml file by changing the root node
         Stage stage = (Stage) opA.getScene().getWindow(); //gets the stage
         Parent root = FXMLLoader.load(getClass().getResource("game.fxml"));
         stage.getScene().setRoot(root); //changes the root node
