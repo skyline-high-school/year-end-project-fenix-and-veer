@@ -21,4 +21,13 @@ public class Popup {
         closeButton.setOnAction(e -> pane.setVisible(false));
     }
 
+    /*
+    public void display(DialogPane pane) {
+        pane.setVisible(true);
+        closeButton = (Button) pane.lookupButton(ButtonType.CLOSE);
+        closeButton.setOnAction(e -> pane.setVisible(false));
+    }
+
+     */
+
 }

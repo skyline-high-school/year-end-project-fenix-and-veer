@@ -10,19 +10,20 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class GameController {
+
+    private int numEncounters = 0;
     @FXML
     private Button opA, opB, opC;
 
-    @FXML
-    protected void onOpAClick() throws IOException {
-        Stage stage = (Stage) opA.getScene().getWindow(); //gets the stage
-        Parent root = FXMLLoader.load(getClass().getResource("game.fxml"));
-        stage.getScene().setRoot(root); //changes the root node
-        stage.show();
+
+    public void onOpAClick() {
+
     }
 
     public void onOpBClick(ActionEvent event) {
+
     }
     public void onOpCClick(ActionEvent event) {
+
     }
 }

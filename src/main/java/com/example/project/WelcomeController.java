@@ -31,7 +31,6 @@ public class WelcomeController {
     }
 
     public void onHelpButtonClick() {
-
         Popup popup = new Popup(helpPane, "Help","This is a choose-your-own-adventure style survival game. " +
                 "You will face a number of scenarios, or \"encounters\", with many possible responses. " +
                 "Simply select the reaction you want to go with. Your choices matter! Now, go survive!");
