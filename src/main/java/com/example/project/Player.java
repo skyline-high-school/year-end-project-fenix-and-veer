@@ -1,5 +1,7 @@
 package com.example.project;
 
+import javafx.scene.control.DialogPane;
+
 import java.util.ArrayList;
 
 public class Player {
@@ -9,7 +11,7 @@ public class Player {
     private int thirst;
     private int hp; //health
     private ArrayList<Object> inv; //inventory
-    private int bodyTemp;
+    private int heat; //body temperature
     private boolean dead;
     private String causeOfDeath;
 
@@ -18,7 +20,7 @@ public class Player {
         hunger = 20;
         thirst = 20;
         hp = 20;
-        bodyTemp = 98; //in degrees F
+        heat = 98; //in degrees F
         inv = new ArrayList<>(); //max items the user can carry = 10
         dead = false;
     }
@@ -63,12 +65,12 @@ public class Player {
         this.inv = inv;
     }
 
-    public int getBodyTemp() {
-        return bodyTemp;
+    public int getHeat() {
+        return heat;
     }
 
-    public void setBodyTemp(int bodyTemp) {
-        this.bodyTemp = bodyTemp;
+    public void setHeat(int heat) {
+        this.heat = heat;
     }
 
     public boolean isDead() {
@@ -79,7 +81,7 @@ public class Player {
         this.dead = dead;
     }
 
-    //because it looks nicer than having to do "player.setHunger(player.getHp() - choices.get(i).getHpImpact())" every time
+    //because it looks nicer than having to do "player.setHunger(player.getHp() - choices[i].getHpImpact())" every time
     public void changeHp(int change) {
         this.hp += change; //will decrease hp if the change passed for the parameter is negative
         if (this.hp > 20) {
@@ -110,12 +112,12 @@ public class Player {
         }
     }
 
-    public void changeBodyTemp(int change) {
-        this.bodyTemp += change; //will decrease if the change passed for the parameter is negative
-        if (bodyTemp > 104) { //based on real life body temperature average limits
+    public void changeHeat(int change) {
+        this.heat += change; //will decrease if the change passed for the parameter is negative
+        if (heat > 104) { //based on real life body temperature average limits
             dead = true;
             causeOfDeath = "heat stroke";
-        } else if (bodyTemp < 95) {
+        } else if (heat < 95) {
             dead = true;
             causeOfDeath = "hypothermia";
         }
@@ -124,6 +126,11 @@ public class Player {
     }
 
     public void addToInv(Object item) {
+        Encounter encounter = new Encounter("Inventory", "Add " + item.toString() + " to your inventory?", new Choice[]{
+                new Choice("Add", item),
+                new Choice("Don't add"),
+                new Choice("") //TODO change later, I just can't think of a third option right now
+        });
         this.inv.add(item);
     }
 }

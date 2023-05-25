@@ -7,12 +7,39 @@ public class Choice {
     private int hpImpact;
     private int hungerImpact;
     private int thirstImpact;
-    private int bodyTempImpact;
+    private int heatImpact;
+    private Encounter encounterImpact; //for when selecting a choice sets another encounter into motion
     private Object invAdd; //object to be added to the inventory as an impact of the choice (if selected)
     private boolean chosen; //true if the user chose this choice (for other choice consequences that depend on what they chose here)
 
     public Choice(String text) {
         this.text = text;
+    }
+
+    public Choice(String text, String impact, int impactAmt) {
+        this.text = text;
+
+        if(impact.equals("hp")) {
+            this.hpImpact = impactAmt;
+        } else if(impact.equals("hunger")) {
+            this.hungerImpact = impactAmt;
+        } else if(impact.equals("thirst")) {
+            this.thirstImpact = impactAmt;
+        } else if(impact.equals("heat")) {
+            this.heatImpact = impactAmt;
+        } else {
+            throw new IllegalArgumentException("Your impact String must be either hp, hunger, thirst, or heat");
+        }
+    }
+
+    public Choice(String text, Object item) {
+        this.text = text;
+        this.invAdd = item; //item to add to inventory as a result of this choice
+    }
+
+    public Choice(String text, Encounter encounter) {
+        this.text = text;
+        this.encounterImpact = encounter;
     }
 
     public String getText() {
@@ -47,12 +74,12 @@ public class Choice {
         this.thirstImpact = thirstImpact;
     }
 
-    public int getBodyTempImpact() {
-        return bodyTempImpact;
+    public int getHeatImpact() {
+        return heatImpact;
     }
 
-    public void setBodyTempImpact(int bodyTempImpact) {
-        this.bodyTempImpact = bodyTempImpact;
+    public void setHeatImpact(int heatImpact) {
+        this.heatImpact = heatImpact;
     }
 
     public Object getInvAdd() {
