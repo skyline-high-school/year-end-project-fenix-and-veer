@@ -15,11 +15,35 @@ public class Encounter {
     public Encounter() {
     }
 
-    public void choose(Player player, int i) { //i = index of the choice in the Choices ArrayList
+    public void choose(Player player, int i) { //i = index of the choice in the Choices Array
         choices[i].setChosen(true);
         player.changeHp(choices[i].getHpImpact());
         player.changeHunger(choices[i].getHungerImpact());
         player.changeThirst(choices[i].getThirstImpact());
         player.changeHeat(choices[i].getHeatImpact());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescript() {
+        return descript;
+    }
+
+    public void setDescript(String descript) {
+        this.descript = descript;
+    }
+
+    public Choice[] getChoices() {
+        return choices;
+    }
+
+    public void setChoices(Choice[] choices) {
+        this.choices = choices;
     }
 }

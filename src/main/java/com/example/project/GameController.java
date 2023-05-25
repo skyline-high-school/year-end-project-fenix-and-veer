@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
@@ -41,9 +42,12 @@ public class GameController {
     private Encounter findFoodEnc;
     private Encounter foundAnItem;
     private Encounter storeAnItem;
+    private Encounter currentEnc;
+    private Player player = new Player("Feniz"); //TODO change this
+    Popup popup = new Popup(dialogPane);
 
     @FXML
-    public void initialize() {
+    public void initialize() throws InterruptedException {
         imp = "hp"; //again, imp = impact
         hpEnc = new Encounter("Low HP", "You have taken significant damage.", new Choice[]{
                 new Choice("Make a bandage out of leaves", imp, 10),
@@ -52,8 +56,6 @@ public class GameController {
                 new Choice("Wait", imp, 0)
         });
 
-
-        //TODO fix
         /*
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
                 new Choice("Look in the woods", )
@@ -66,18 +68,24 @@ public class GameController {
                 new Choice("Find something to eat",
                 new Choice("Wait")
         });
-        */
+
+         */
+
+        currentEnc = hpEnc;
+        runGame();
     }
 
     public void onOpAClick () {
-
+        popup.notify();
+        currentEnc.choose(player, 0);
+        hpBar.setProgress((double) player.getHp()/20); //converts the hp ratio out of the max 20 to a number between 0 and 1, which the progressBar is based on
     }
 
     public void onOpBClick (ActionEvent event){
-
+        currentEnc.choose(player, 1);
     }
     public void onOpCClick (ActionEvent event){
-
+        currentEnc.choose(player, 2);
     }
 
     //TODO fix
@@ -92,4 +100,18 @@ public class GameController {
     }
 
      */
+
+    public void runGame() {
+        while(!player.isDead()) {
+            //popup.display(currentEnc.getName(), currentEnc.getDescript());
+            //popup.wait();
+
+            dialogPane.setHeaderText("header");
+            dialogPane.setContentText("content");
+            dialogPane.setVisible(true);
+
+            Button closeButton = (Button) dialogPane.lookupButton(ButtonType.CLOSE);
+            closeButton.setOnAction(e -> dialogPane.setVisible(false));
+        }
+    }
 }
