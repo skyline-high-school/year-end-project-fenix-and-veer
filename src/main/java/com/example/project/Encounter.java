@@ -2,37 +2,24 @@ package com.example.project;
 
 public class Encounter {
 
-    private String scenario;
-    private String[] choices;
-    private String[] impact;
+    private String name; //a title/header for the dialogPane giving a very brief description of the encounter
+    private String descript; //longer more detailed description of the scenario/encounter
+    private Choice[] choices = new Choice[3];
 
-    public Encounter(String scenario, String[] choices, String[] impact) {
-        this.scenario = scenario;
-        this.choices = choices;
-        this.impact = impact;
-    }
-
-    public String getScenario() {
-        return scenario;
-    }
-
-    public void setScenario(String scenario) {
-        this.scenario = scenario;
-    }
-
-    public String[] getChoices() {
-        return choices;
-    }
-
-    public void setChoices(String[] choices) {
+    public Encounter(String name, String descript, Choice[] choices) {
+        this.name = name;
+        this.descript = descript + " What will you do?";
         this.choices = choices;
     }
 
-    public String[] getImpact() {
-        return impact;
+    public Encounter() {
     }
 
-    public void setImpact(String[] impact) {
-        this.impact = impact;
+    public void choose(Player player, int i) { //i = index of the choice in the Choices ArrayList
+        choices[i].setChosen(true);
+        player.changeHp(choices[i].getHpImpact());
+        player.changeHunger(choices[i].getHungerImpact());
+        player.changeThirst(choices[i].getThirstImpact());
+        player.changeHeat(choices[i].getHeatImpact());
     }
 }
