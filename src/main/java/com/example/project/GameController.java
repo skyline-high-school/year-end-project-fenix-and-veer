@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameController {
 
@@ -38,13 +39,16 @@ public class GameController {
     private Encounter hpEnc;
     private Encounter hungerEnc;
     private Encounter thirstEnc;
-    private Encounter heatEnc;
+    private Encounter hypothermiaEnc;
+    private Encounter hyperthermiaEnc;
     private Encounter findFoodEnc;
     private Encounter foundAnItem;
     private Encounter storeAnItem;
     private Encounter currentEnc;
     private Player player = new Player("Feniz"); //TODO change this
     private Popup popup;
+    private static final int triggerAmt = 10; //the value at which hp, hunger, or thirst will be considered low enough to warrant an encounter
+    private Random rand = new Random();
 
     @FXML
     public void initialize() throws InterruptedException {
@@ -59,8 +63,9 @@ public class GameController {
         /*
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
                 new Choice("Look in the woods", )
-
+                new Choice
                 imp = "hunger";
+
 
 
         hungerEnc = new Encounter("Hungry", "You are getting hungry.", new Choice[]{
@@ -72,10 +77,8 @@ public class GameController {
          */
 
         currentEnc = hpEnc;
-        //popup = new Popup(dialogPane);
-        //popup.display(currentEnc.getName(), currentEnc.getDescript());
         popup = new Popup(dialogPane);
-
+        popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
 
     public void onOpAClick () {
@@ -103,7 +106,23 @@ public class GameController {
 
      */
 
-    public void runGame() {
+    public void nextEnc() { //initiates next encounter
 
+        //if the player is in some type of health condition, that will be there next encounter
+        // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
+
+        if (player.getHp() <= triggerAmt) {
+            currentEnc = hpEnc;
+        } else if (player.getHunger() <= triggerAmt) {
+            currentEnc = hungerEnc;
+        } else if (player.getThirst() <= triggerAmt) {
+            currentEnc = thirstEnc;
+        } else if (player.getHeat() <= 95) {
+            currentEnc = hypothermiaEnc;
+        } else if (player.getHeat() <= 100) {
+            currentEnc = hyperthermiaEnc; //aka overheating
+        } else {
+            currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
+        }
     }
 }

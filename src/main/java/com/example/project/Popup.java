@@ -38,8 +38,8 @@ public class Popup {
         pane.setContentText(content);
         pane.setVisible(true);
 
-        closeButton = (Button) pane.lookupButton(ButtonType.CLOSE);
-        closeButton.setOnAction(e -> pane.setVisible(false));
+        //closeButton = (Button) pane.lookupButton(ButtonType.CLOSE);
+        //closeButton.setOnAction(e -> pane.setVisible(false));
     }
 
 
