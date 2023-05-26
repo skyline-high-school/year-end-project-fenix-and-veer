@@ -44,7 +44,7 @@ public class GameController {
     private Encounter storeAnItem;
     private Encounter currentEnc;
     private Player player = new Player("Feniz"); //TODO change this
-    Popup popup = new Popup(dialogPane);
+    private Popup popup;
 
     @FXML
     public void initialize() throws InterruptedException {
@@ -72,11 +72,13 @@ public class GameController {
          */
 
         currentEnc = hpEnc;
-        runGame();
+        //popup = new Popup(dialogPane);
+        //popup.display(currentEnc.getName(), currentEnc.getDescript());
+        popup = new Popup(dialogPane);
+
     }
 
     public void onOpAClick () {
-        popup.notify();
         currentEnc.choose(player, 0);
         hpBar.setProgress((double) player.getHp()/20); //converts the hp ratio out of the max 20 to a number between 0 and 1, which the progressBar is based on
     }
@@ -102,16 +104,6 @@ public class GameController {
      */
 
     public void runGame() {
-        while(!player.isDead()) {
-            //popup.display(currentEnc.getName(), currentEnc.getDescript());
-            //popup.wait();
 
-            dialogPane.setHeaderText("header");
-            dialogPane.setContentText("content");
-            dialogPane.setVisible(true);
-
-            Button closeButton = (Button) dialogPane.lookupButton(ButtonType.CLOSE);
-            closeButton.setOnAction(e -> dialogPane.setVisible(false));
-        }
     }
 }
