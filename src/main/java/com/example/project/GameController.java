@@ -111,6 +111,7 @@ public class GameController {
         //if the player is in some type of health condition, that will be there next encounter
         // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
 
+        //picks the next encounter
         if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
         } else if (player.getHunger() <= triggerAmt) {
@@ -124,5 +125,19 @@ public class GameController {
         } else {
             currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
         }
+
+        //refreshes buttons
+        Choice temp;
+        temp = currentEnc.getChoices()[0];
+        opA.setText(temp.getText());
+
+        temp = currentEnc.getChoices()[1];
+        opB.setText(temp.getText());
+
+        temp = currentEnc.getChoices()[2];
+        opC.setText(temp.getText());
+
     }
+
 }
+
