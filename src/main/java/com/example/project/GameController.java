@@ -52,6 +52,7 @@ public class GameController {
 
     @FXML
     public void initialize() throws InterruptedException {
+        player.setHp(8);
         imp = "hp"; //again, imp = impact
         hpEnc = new Encounter("Low HP", "You have taken significant damage.", new Choice[]{
                 new Choice("Make a bandage out of leaves", imp, 10),
@@ -76,7 +77,7 @@ public class GameController {
 
          */
 
-        currentEnc = hpEnc;
+        nextEnc();
         popup = new Popup(dialogPane);
         popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
@@ -126,6 +127,10 @@ public class GameController {
             currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
         }
 
+        refreshBars();
+        refreshOptions();
+
+        /*
         //refreshes buttons
         Choice temp;
         temp = currentEnc.getChoices()[0];
@@ -137,7 +142,23 @@ public class GameController {
         temp = currentEnc.getChoices()[2];
         opC.setText(temp.getText());
 
+         */
     }
 
+    public void refreshOptions() {
+        Button[] options = {opA, opB, opC};
+        Choice temp;
+        for (int i = 0; i < 3; i++) {
+            temp = currentEnc.getChoices()[i];
+            options[i].setText(temp.getText());
+        }
+    }
+
+    public void refreshBars() {
+        hpBar.setProgress((double) player.getHp()/20);
+        hungerBar.setProgress((double) player.getHunger()/20);
+        thirstBar.setProgress((double) player.getThirst()/20);
+        bodyHeatBar.setProgress((double) player.getHeat()/20);
+    }
 }
 
