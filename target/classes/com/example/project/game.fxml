@@ -38,7 +38,7 @@
    </GridPane>
    <DialogPane fx:id="dialogPane" expanded="true" prefHeight="260.0" prefWidth="295.0" />
 
-    <Button fx:id="opA" onAction="#onOpAClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opA" textFill="WHITE" />
-   <Button fx:id="opB" layoutX="116.0" layoutY="424.0" onAction="#onOpBClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opB" textFill="WHITE" />
-   <Button fx:id="opC" layoutX="116.0" layoutY="451.0" onAction="#onOpCClick" prefHeight="34.0" prefWidth="123.0" style="-fx-background-color: seagreen;" text="opC" textFill="WHITE" />
+    <Button fx:id="opA" onAction="#onOpAClick" prefHeight="34.0" prefWidth="300.0" style="-fx-background-color: seagreen;" text="opA" textFill="WHITE" wrapText="true" />
+   <Button fx:id="opB" layoutX="116.0" layoutY="424.0" onAction="#onOpBClick" prefHeight="34.0" prefWidth="318.0" style="-fx-background-color: seagreen;" text="opB" textFill="WHITE" wrapText="true" />
+   <Button fx:id="opC" layoutX="116.0" layoutY="451.0" onAction="#onOpCClick" prefHeight="34.0" prefWidth="328.0" style="-fx-background-color: seagreen;" text="opC" textFill="WHITE" wrapText="true" />
 </VBox>

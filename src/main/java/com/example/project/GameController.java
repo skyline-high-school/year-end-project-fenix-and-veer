@@ -50,6 +50,7 @@ public class GameController {
     private static final int triggerAmt = 10; //the value at which hp, hunger, or thirst will be considered low enough to warrant an encounter
     private Random rand = new Random();
 
+
     @FXML
     public void initialize() throws InterruptedException {
         player.setHp(8);
@@ -61,17 +62,34 @@ public class GameController {
                 new Choice("Wait", imp, 0)
         });
 
-        /*
+        Encounter[] woodsSearchEncounters = {new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
+                new Choice("Eat the berries"),
+                new Choice("Don't eat the berries", "hunger", 0),
+                new Choice("")
+        }),
+        new Encounter("Food found in the woods", "You found a wild chicken in the woods.", new Choice[]{
+                new Choice("Cook and eat the chicken", "hunger", 20),
+                new Choice("Just take the egg from its nest", new FoodItem("egg", 10)),
+                new Choice("Leave it and take nothing", "hunger", 0)
+        })};
+/*
+        woodsSearchEncounters[0].getChoices()[]
+        woodsSearchEncChoices[0].setHungerImpact(tempUnknownFoodImp);
+        if (tempUnknownFoodImp < 0) {
+            woodsSearchEncChoices[0].setHpImpact(tempUnknownFoodImp);
+        }
+
+ */
+
+            /*
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
-                new Choice("Look in the woods", )
-                new Choice
-                imp = "hunger";
+                new Choice("Look in the woods", new Encounter()
 
-
+/*
 
         hungerEnc = new Encounter("Hungry", "You are getting hungry.", new Choice[]{
                 new Choice("Eat something from your inventory", imp, 19), //19 because max is 20 and min they can be alive at is 1
-                new Choice("Find something to eat",
+                new Choice("Find something to eat", imp, ,
                 new Choice("Wait")
         });
 
@@ -160,5 +178,14 @@ public class GameController {
         thirstBar.setProgress((double) player.getThirst()/20);
         bodyHeatBar.setProgress((double) player.getHeat()/20);
     }
+
+    public int unknownFoodImp() {
+        if (rand.nextBoolean()) { //if safe to eat
+            return 10;
+        } else { //if poisonous
+            return -10;
+        }
+    }
+
 }
 
