@@ -36,6 +36,7 @@ public class GameController {
     //the following each get their own Encounter variables, rather than being in the ArrayList irregEnc, because they will
     // be commonly used and will be used NON-randomly. They will activate under certain Player variable conditions
     // like low HP after some choice
+
     private Encounter hpEnc;
     private Encounter hungerEnc;
     private Encounter thirstEnc;
@@ -45,6 +46,10 @@ public class GameController {
     private Encounter foundAnItem;
     private Encounter storeAnItem;
     private Encounter currentEnc;
+    private Encounter[] woodsSearchEncounters;
+    private Encounter searchInvForFood;
+
+
     private Player player = new Player("Feniz"); //TODO change this
     private Popup popup;
     private static final int triggerAmt = 10; //the value at which hp, hunger, or thirst will be considered low enough to warrant an encounter
@@ -62,7 +67,8 @@ public class GameController {
                 new Choice("Wait", imp, 0)
         });
 
-        Encounter[] woodsSearchEncounters = {new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
+        //array for multiple encounter outcomes from a previous encounter
+        woodsSearchEncounters = new Encounter[]{new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
                 new Choice("Eat the berries"),
                 new Choice("Don't eat the berries", "hunger", 0),
                 new Choice("")
@@ -72,6 +78,9 @@ public class GameController {
                 new Choice("Just take the egg from its nest", new FoodItem("egg", 10)),
                 new Choice("Leave it and take nothing", "hunger", 0)
         })};
+
+        searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getInv().toString());
+
 /*
         woodsSearchEncounters[0].getChoices()[]
         woodsSearchEncChoices[0].setHungerImpact(tempUnknownFoodImp);
@@ -81,10 +90,11 @@ public class GameController {
 
  */
 
-            /*
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
-                new Choice("Look in the woods", new Encounter()
-
+                new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(2)]),
+                new Choice("", "hunger", 0),
+                new Choice("Eat something from your inventory", searchInvForFood)
+        });
 /*
 
         hungerEnc = new Encounter("Hungry", "You are getting hungry.", new Choice[]{
@@ -95,21 +105,35 @@ public class GameController {
 
          */
 
-        nextEnc();
+        nextEnc(findFoodEnc);
         popup = new Popup(dialogPane);
         popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
 
     public void onOpAClick () {
         currentEnc.choose(player, 0);
-        hpBar.setProgress((double) player.getHp()/20); //converts the hp ratio out of the max 20 to a number between 0 and 1, which the progressBar is based on
+        if (currentEnc.getChoices()[0].getEncounterImpact() == null) {
+            nextEnc();
+        } else {
+            nextEnc(currentEnc.getChoices()[0].getEncounterImpact());
+        }
     }
 
     public void onOpBClick (ActionEvent event){
         currentEnc.choose(player, 1);
+        if (currentEnc.getChoices()[1].getEncounterImpact() == null) {
+            nextEnc();
+        } else {
+            nextEnc(currentEnc.getChoices()[1].getEncounterImpact());
+        }
     }
     public void onOpCClick (ActionEvent event){
         currentEnc.choose(player, 2);
+        if (currentEnc.getChoices()[2].getEncounterImpact() == null) {
+            nextEnc();
+        } else {
+            nextEnc(currentEnc.getChoices()[2].getEncounterImpact());
+        }
     }
 
     //TODO fix
@@ -163,6 +187,13 @@ public class GameController {
          */
     }
 
+    //for when one encounter leads to another encounter
+     public void nextEnc(Encounter encounter) {
+        currentEnc = encounter;
+        refreshBars();
+        refreshOptions();
+     }
+
     public void refreshOptions() {
         Button[] options = {opA, opB, opC};
         Choice temp;
@@ -170,14 +201,17 @@ public class GameController {
             temp = currentEnc.getChoices()[i];
             options[i].setText(temp.getText());
         }
+        popup = new Popup(dialogPane);
+        popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
 
     public void refreshBars() {
-        hpBar.setProgress((double) player.getHp()/20);
+        hpBar.setProgress((double) player.getHp()/20); //converts the hp ratio out of the max 20 to a number between 0 and 1, which the progressBar is based on
         hungerBar.setProgress((double) player.getHunger()/20);
         thirstBar.setProgress((double) player.getThirst()/20);
         bodyHeatBar.setProgress((double) player.getHeat()/20);
     }
+
 
     public int unknownFoodImp() {
         if (rand.nextBoolean()) { //if safe to eat

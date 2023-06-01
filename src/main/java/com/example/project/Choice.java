@@ -97,4 +97,12 @@ public class Choice {
     public void setChosen(boolean wasChosen) {
         this.chosen = wasChosen;
     }
+
+    public Encounter getEncounterImpact() {
+        return encounterImpact;
+    }
+
+    public void setEncounterImpact(Encounter encounterImpact) {
+        this.encounterImpact = encounterImpact;
+    }
 }
