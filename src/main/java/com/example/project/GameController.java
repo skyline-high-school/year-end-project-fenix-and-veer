@@ -79,7 +79,12 @@ public class GameController {
                 new Choice("Leave it and take nothing", "hunger", 0)
         })};
 
-        searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getInv().toString());
+
+        searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getFoodInv().toString(), new Choice[] {
+                new Choice("Eat" + player.getFoodInv().get(0).toString(), "hunger", player.getFoodInv().get(0).getHungerImp()),
+                new Choice("Eat" + player.getFoodInv().get(1).toString(), "hunger", player.getFoodInv().get(1).getHungerImp()),
+                new Choice("Eat" + player.getFoodInv().get(2).toString(), "hunger", player.getFoodInv().get(2).getHungerImp())
+        });
 
 /*
         woodsSearchEncounters[0].getChoices()[]
@@ -95,17 +100,15 @@ public class GameController {
                 new Choice("", "hunger", 0),
                 new Choice("Eat something from your inventory", searchInvForFood)
         });
-/*
 
         hungerEnc = new Encounter("Hungry", "You are getting hungry.", new Choice[]{
-                new Choice("Eat something from your inventory", imp, 19), //19 because max is 20 and min they can be alive at is 1
-                new Choice("Find something to eat", imp, ,
-                new Choice("Wait")
+                //new Choice("Eat something from your inventory", imp, 19), //19 because max is 20 and min they can be alive at is 1
+                new Choice("Eat something from your inventory", searchInvForFood),
+                new Choice("Find something to eat", woodsSearchEncounters[rand.nextInt(2)]),
+                new Choice("Wait", "hunger", 0)
         });
 
-         */
-
-        nextEnc(findFoodEnc);
+        nextEnc();
         popup = new Popup(dialogPane);
         popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
@@ -219,6 +222,10 @@ public class GameController {
         } else { //if poisonous
             return -10;
         }
+    }
+
+    public void SearchInvForFood() {
+
     }
 
 }

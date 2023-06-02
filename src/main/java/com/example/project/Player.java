@@ -11,6 +11,7 @@ public class Player {
     private int thirst;
     private int hp; //health
     private ArrayList<Object> inv; //inventory
+    private ArrayList<FoodItem> foodInv; //inv just for food
     private int heat; //body temperature
     private boolean dead;
     private String causeOfDeath;
@@ -63,6 +64,22 @@ public class Player {
 
     public void setInv(ArrayList<Object> inv) {
         this.inv = inv;
+    }
+
+    public ArrayList<FoodItem> getFoodInv() {
+        return foodInv;
+    }
+
+    public void setFoodInv(ArrayList<FoodItem> foodInv) {
+        this.foodInv = foodInv;
+    }
+
+    public String getCauseOfDeath() {
+        return causeOfDeath;
+    }
+
+    public void setCauseOfDeath(String causeOfDeath) {
+        this.causeOfDeath = causeOfDeath;
     }
 
     public int getHeat() {
