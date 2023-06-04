@@ -52,4 +52,9 @@ public class Encounter {
     public void setChoices(Choice[] choices) {
         this.choices = choices;
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

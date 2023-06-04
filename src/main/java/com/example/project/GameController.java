@@ -37,17 +37,26 @@ public class GameController {
     // be commonly used and will be used NON-randomly. They will activate under certain Player variable conditions
     // like low HP after some choice
 
+    private Encounter firstEnc;
     private Encounter hpEnc;
     private Encounter hungerEnc;
-    private Encounter thirstEnc;
-    private Encounter hypothermiaEnc;
-    private Encounter hyperthermiaEnc;
-    private Encounter findFoodEnc;
-    private Encounter foundAnItem;
-    private Encounter storeAnItem;
-    private Encounter currentEnc;
+    private Encounter thirstEnc = new Encounter();
+    private Encounter hypothermiaEnc = new Encounter();
+    private Encounter hyperthermiaEnc = new Encounter();
+    private Encounter findFoodEnc = new Encounter();
+    private Encounter foundAnItem = new Encounter();
+    private Encounter storeAnItem = new Encounter();
+    private Encounter currentEnc = new Encounter();
     private Encounter[] woodsSearchEncounters;
     private Encounter searchInvForFood;
+    private Encounter noFoodInvEnc;
+    private Encounter hungerEncNoFoodInv;
+    private Encounter buildShelter;
+    private Encounter getWater;
+
+    //TODO delete
+    private Encounter testEnc;
+
 
 
     private Player player = new Player("Feniz"); //TODO change this
@@ -59,6 +68,7 @@ public class GameController {
     @FXML
     public void initialize() throws InterruptedException {
         player.setHp(8);
+
         imp = "hp"; //again, imp = impact
         hpEnc = new Encounter("Low HP", "You have taken significant damage.", new Choice[]{
                 new Choice("Make a bandage out of leaves", imp, 10),
@@ -70,52 +80,94 @@ public class GameController {
         //array for multiple encounter outcomes from a previous encounter
         woodsSearchEncounters = new Encounter[]{new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
                 new Choice("Eat the berries"),
-                new Choice("Don't eat the berries", "hunger", 0),
-                new Choice("")
+                new Choice("Don't eat the berries", "hunger", -4),
+                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
         }),
         new Encounter("Food found in the woods", "You found a wild chicken in the woods.", new Choice[]{
                 new Choice("Cook and eat the chicken", "hunger", 20),
                 new Choice("Just take the egg from its nest", new FoodItem("egg", 10)),
                 new Choice("Leave it and take nothing", "hunger", 0)
+        }),
+        new Encounter("Food found in the woods", "You found some tree bark in the woods.", new Choice[]{
+                new Choice("Eat the tree bark", "hunger", 10),
+                new Choice("Don't eat the tree bark", "hunger", -4),
+                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
+        }),
+        new Encounter("Food found in the woods", "You found a couple worms in the woods.", new Choice[]{
+                new Choice("Eat the worms", "hunger", 10),
+                new Choice("Don't eat the worms", "hunger", -4),
+                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
         })};
 
-
-        searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getFoodInv().toString(), new Choice[] {
-                new Choice("Eat" + player.getFoodInv().get(0).toString(), "hunger", player.getFoodInv().get(0).getHungerImp()),
-                new Choice("Eat" + player.getFoodInv().get(1).toString(), "hunger", player.getFoodInv().get(1).getHungerImp()),
-                new Choice("Eat" + player.getFoodInv().get(2).toString(), "hunger", player.getFoodInv().get(2).getHungerImp())
-        });
-
-/*
-        woodsSearchEncounters[0].getChoices()[]
-        woodsSearchEncChoices[0].setHungerImpact(tempUnknownFoodImp);
-        if (tempUnknownFoodImp < 0) {
-            woodsSearchEncChoices[0].setHpImpact(tempUnknownFoodImp);
-        }
-
- */
+        unknownFoodImp(woodsSearchEncounters[0].getChoices()[0]); //sets whether the berries are poisonous
 
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
-                new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(2)]),
-                new Choice("", "hunger", 0),
+                new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]),
+                new Choice("Go fishing with a makeshift spear", "hunger", 19),
                 new Choice("Eat something from your inventory", searchInvForFood)
         });
 
-        hungerEnc = new Encounter("Hungry", "You are getting hungry.", new Choice[]{
-                //new Choice("Eat something from your inventory", imp, 19), //19 because max is 20 and min they can be alive at is 1
-                new Choice("Eat something from your inventory", searchInvForFood),
-                new Choice("Find something to eat", woodsSearchEncounters[rand.nextInt(2)]),
+        hungerEnc = new Encounter("Hungry", "You are getting hungry.");
+        hungerEnc.setChoices(new Choice[]{
+                new Choice("Eat something from your inventory", searchInvForFood(hungerEnc)),
+                new Choice("Find something to eat", findFoodEnc),
                 new Choice("Wait", "hunger", 0)
         });
 
-        nextEnc();
+        thirstEnc = new Encounter("Dehydration", "You are thirsty and dehydrated.", new Choice[] {
+                new Choice("Drink some water straight from the sea"),
+                new Choice("Get water from the sea, boil it in a large shell, and then drink it"),
+                new Choice("Wait", "thirst", 0)
+        });
+
+
+
+
+        //TODO delete
+        testEnc = new Encounter("omg", "I figured it out", new Choice[] {
+                new Choice("1", "hunger", -5),
+                new Choice("2", "hunger", -5),
+                new Choice("3", "hunger", -5)
+        });
+
+
+
+        //this looks very messy, but it is just the first encounter of the game, asking what you want to do first.
+        firstEnc = new Encounter("Stranded", "You were traveling over the sea when your ship sunk. " +
+                "You swam until you reached land, and you now find yourself stranded alone on the beach of an unknown island.",
+                new Choice[] {
+                        new Choice("Build a shelter", buildShelter),
+                        new Choice("Get water", getWater),
+                        new Choice("Sit around on the beach and wait to see if a ship comes by", new Encounter(
+                                "Waiting...", "You wait on the beach for a long while, but nobody comes by.",
+                                new Choice[]{
+                                        new Choice("Get up", new Encounter("What to do next",
+                                                "It doesn't look like anybody is going to come anytime soon.",
+                                                new Choice[]{
+                                                        new Choice("Build a shelter", buildShelter),
+                                                        new Choice("Get water", getWater),
+                                                        new Choice("Get food", findFoodEnc)
+                                                }
+                                        )),
+                                        new Choice(""),
+                                        new Choice("")
+                                }))
+        });
+
+        nextEnc(firstEnc);
         popup = new Popup(dialogPane);
         popup.display(currentEnc.getName(), currentEnc.getDescript());
     }
 
     public void onOpAClick () {
         currentEnc.choose(player, 0);
+        Choice[] tempChoices = currentEnc.getChoices();
+        /*
         if (currentEnc.getChoices()[0].getEncounterImpact() == null) {
+            nextEnc();
+
+         */
+        if(tempChoices.length > 0 && tempChoices[0].getEncounterImpact() == null) {
             nextEnc();
         } else {
             nextEnc(currentEnc.getChoices()[0].getEncounterImpact());
@@ -123,16 +175,37 @@ public class GameController {
     }
 
     public void onOpBClick (ActionEvent event){
+        /*
         currentEnc.choose(player, 1);
         if (currentEnc.getChoices()[1].getEncounterImpact() == null) {
             nextEnc();
         } else {
             nextEnc(currentEnc.getChoices()[1].getEncounterImpact());
         }
+
+         */
+
+        currentEnc.choose(player, 1);
+        Choice[] tempChoices = currentEnc.getChoices();
+        if(tempChoices.length > 0 && tempChoices[1].getEncounterImpact() == null) {
+            nextEnc();
+        } else {
+            nextEnc(currentEnc.getChoices()[1].getEncounterImpact());
+        }
     }
     public void onOpCClick (ActionEvent event){
-        currentEnc.choose(player, 2);
+        /*currentEnc.choose(player, 2);
         if (currentEnc.getChoices()[2].getEncounterImpact() == null) {
+            nextEnc();
+        } else {
+            nextEnc(currentEnc.getChoices()[2].getEncounterImpact());
+        }
+
+         */
+
+        currentEnc.choose(player, 2);
+        Choice[] tempChoices = currentEnc.getChoices();
+        if(tempChoices.length > 0 && tempChoices[2].getEncounterImpact() == null) {
             nextEnc();
         } else {
             nextEnc(currentEnc.getChoices()[2].getEncounterImpact());
@@ -154,6 +227,8 @@ public class GameController {
 
     public void nextEnc() { //initiates next encounter
 
+        System.out.println(this.currentEnc);
+
         //if the player is in some type of health condition, that will be there next encounter
         // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
 
@@ -169,32 +244,30 @@ public class GameController {
         } else if (player.getHeat() <= 100) {
             currentEnc = hyperthermiaEnc; //aka overheating
         } else {
-            currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
+            //currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
+            currentEnc = testEnc;
         }
+
+        System.out.println(this.currentEnc);
 
         refreshBars();
         refreshOptions();
-
-        /*
-        //refreshes buttons
-        Choice temp;
-        temp = currentEnc.getChoices()[0];
-        opA.setText(temp.getText());
-
-        temp = currentEnc.getChoices()[1];
-        opB.setText(temp.getText());
-
-        temp = currentEnc.getChoices()[2];
-        opC.setText(temp.getText());
-
-         */
     }
 
     //for when one encounter leads to another encounter
      public void nextEnc(Encounter encounter) {
-        currentEnc = encounter;
-        refreshBars();
-        refreshOptions();
+        /*
+        if (encounter != null) {
+            currentEnc = encounter;
+            refreshBars();
+            refreshOptions();
+        }
+         */
+         System.out.println(this.currentEnc);
+         currentEnc = encounter;
+         refreshBars();
+         refreshOptions();
+         System.out.println(this.currentEnc);
      }
 
     public void refreshOptions() {
@@ -216,16 +289,54 @@ public class GameController {
     }
 
 
-    public int unknownFoodImp() {
+    public void unknownFoodImp(Choice choice) {
         if (rand.nextBoolean()) { //if safe to eat
-            return 10;
+            choice.setHungerImpact(10);
         } else { //if poisonous
-            return -10;
+            choice.setHpImpact(-15);
+            player.setCauseOfDeath("food poisoning");
         }
     }
 
-    public void SearchInvForFood() {
+    //based on if the player has stored any food in their inventory, they will get one of two different Encounters responding
+    // to a request to look for food in their inventory
+    public Encounter searchInvForFood(Encounter originEnc) {
+        if (originEnc == null) {
+            throw new IllegalArgumentException();
+        } else if (player.getFoodInv() == null || player.getFoodInv().isEmpty()) {
+            noFoodInvEnc = new Encounter(originEnc.getName(), originEnc.getDescript(), new Choice[] {
+                    originEnc.getChoices()[0],
+                    originEnc.getChoices()[1],
+                    new Choice("Leave it", "hunger", 0) //the replacement for the search inv choice
+            });
+            hungerEncNoFoodInv = new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[]{
+                    new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
+                    new Choice("", "hunger", 0),
+                    new Choice("", "hunger", 0)
+            });
+            hungerEncNoFoodInv.setDescript("It looks like you don't have any food stored in your inventory yet.");
+            /*
+            return new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[] {
+                    new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
+                    new Choice(""),
+                    new Choice("")
+            });
 
+             */
+            return hungerEncNoFoodInv;
+        } else {
+            searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getFoodInv().toString());
+            Choice[] tempChoices = new Choice[3];
+            for (int i = 0; i < 3; i++) {
+                if (player.getFoodInv().get(i) != null) {
+                    tempChoices[i] = new Choice("Eat" + player.getFoodInv().get(i).toString(), "hunger", player.getFoodInv().get(i).getHungerImp());
+                } else {
+                    tempChoices[i] = new Choice("");
+                }
+            }
+            searchInvForFood.setChoices(tempChoices);
+            return searchInvForFood;
+        }
     }
 
 }

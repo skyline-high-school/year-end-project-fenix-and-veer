@@ -3,11 +3,11 @@ package com.example.project;
 public class Choice {
     //choices for the Encounter class
 
-    private String text;
-    private int hpImpact;
-    private int hungerImpact;
-    private int thirstImpact;
-    private int heatImpact;
+    private String text = "";
+    private int hpImpact = 0;
+    private int hungerImpact = 0;
+    private int thirstImpact = 0;
+    private int heatImpact = 0;
     private Encounter encounterImpact; //for when selecting a choice sets another encounter into motion
     private Object invAdd; //object to be added to the inventory as an impact of the choice (if selected)
     private boolean chosen; //true if the user chose this choice (for other choice consequences that depend on what they chose here)
