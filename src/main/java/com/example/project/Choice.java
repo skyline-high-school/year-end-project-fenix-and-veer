@@ -42,6 +42,11 @@ public class Choice {
         this.encounterImpact = encounter;
     }
 
+    public Choice(String text, Result result) {
+        this.text = text;
+        this.encounterImpact = result;
+    }
+
     public String getText() {
         return text;
     }
@@ -105,4 +110,6 @@ public class Choice {
     public void setEncounterImpact(Encounter encounterImpact) {
         this.encounterImpact = encounterImpact;
     }
+
+
 }

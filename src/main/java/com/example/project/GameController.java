@@ -52,6 +52,7 @@ public class GameController {
     private Encounter noFoodInvEnc;
     private Encounter hungerEncNoFoodInv;
     private Encounter buildShelter;
+    private Encounter whereToBuildShelter;
     private Encounter getWater;
 
     //TODO delete
@@ -78,10 +79,10 @@ public class GameController {
         });
 
         //array for multiple encounter outcomes from a previous encounter
-        woodsSearchEncounters = new Encounter[]{new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
+        woodsSearchEncounters = new Encounter[] {new Encounter("Food found in the woods", "You found some unfamiliar red berries in the woods.", new Choice[]{
                 new Choice("Eat the berries"),
                 new Choice("Don't eat the berries", "hunger", -4),
-                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
+                new Choice("Don't eat, keep looking for food", null)
         }),
         new Encounter("Food found in the woods", "You found a wild chicken in the woods.", new Choice[]{
                 new Choice("Cook and eat the chicken", "hunger", 20),
@@ -91,20 +92,26 @@ public class GameController {
         new Encounter("Food found in the woods", "You found some tree bark in the woods.", new Choice[]{
                 new Choice("Eat the tree bark", "hunger", 10),
                 new Choice("Don't eat the tree bark", "hunger", -4),
-                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
+                new Choice("Don't eat, keep looking for food", null)
         }),
         new Encounter("Food found in the woods", "You found a couple worms in the woods.", new Choice[]{
                 new Choice("Eat the worms", "hunger", 10),
                 new Choice("Don't eat the worms", "hunger", -4),
-                new Choice("Don't eat, keep looking for food", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)])
+                new Choice("Don't eat, keep looking for food", null)
         })};
 
         unknownFoodImp(woodsSearchEncounters[0].getChoices()[0]); //sets whether the berries are poisonous
 
+        woodsSearchEncounters[0].getChoices()[2].setEncounterImpact(woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]);
+        woodsSearchEncounters[2].getChoices()[2].setEncounterImpact(woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]);
+        woodsSearchEncounters[3].getChoices()[2].setEncounterImpact(woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]);
+
+
+
         findFoodEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
                 new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]),
                 new Choice("Go fishing with a makeshift spear", "hunger", 19),
-                new Choice("Eat something from your inventory", searchInvForFood)
+                new Choice("Eat something from your inventory", searchInvForFood(findFoodEnc))
         });
 
         hungerEnc = new Encounter("Hungry", "You are getting hungry.");
@@ -116,14 +123,64 @@ public class GameController {
 
         thirstEnc = new Encounter("Dehydration", "You are thirsty and dehydrated.", new Choice[] {
                 new Choice("Drink some water straight from the sea"),
-                new Choice("Get water from the sea, boil it in a large shell, and then drink it"),
+                new Choice("Get water from the sea, boil it in a makeshift pot, and then drink it", new Encounter(
+                        "A makeshift pot", "You want to boil some water. What will you use to make a pot?",
+                        new Choice[] {
+                                new Choice("A large seashell", new Result("Success", "Your makeshift pot worked",
+                                        new Choice("Okay", "thirst", 19))),
+                                new Choice("Some hollowed-out wood that you will put fire-heated rocks in", new Result("Success",
+                                        "Your makeshift pot worked", new Choice("Okay", "thirst", 19))),
+                                new Choice("A glass bottle you found on the beach", new Result("Bottle shattered",
+                                        "Upon getting too hot, the glass bottle shattered. Not only did your water spill into the fire pit," +
+                                                "but some splashed onto you, burning your skin, and some shards of glass shot out and pierced you.",
+                                        new Choice("Okay", "hp", -14))
+                                )
+                        })
+                ),
                 new Choice("Wait", "thirst", 0)
         });
 
+        //almost the same as thirstEnc, but with differences in the encounter name and description and one of the choice texts
+        // this one is voluntary and optional, not a necessity
+        getWater = new Encounter("Where to get water", "You want to get some water. What will you do?", new Choice[] {
+                new Choice("Drink some water straight from the sea"),
+                new Choice("Get water from the sea, boil it in a makeshift pot, and then drink it", new Encounter(
+                        "A makeshift pot", "You want to boil some water. What will you use to make a pot?",
+                        new Choice[] {
+                                new Choice("A large seashell", new Result("Success", "Your makeshift pot worked",
+                                        new Choice("Okay", "thirst", 19))),
+                                new Choice("Some hollowed-out wood that you will put fire-heated rocks in", new Result("Success",
+                                        "Your makeshift pot worked", new Choice("Okay", "thirst", 19))),
+                                new Choice("A glass bottle you found on the beach", new Result("Bottle shattered",
+                                        "Upon getting too hot, the glass bottle shattered. Not only did your water spill into the fire pit," +
+                                                "but some splashed onto you, burning your skin, and some shards of glass shot out and pierced you.",
+                                        new Choice("Okay", "hp", -14))
+                                )
+                        })
+                ),
+                new Choice("Nevermind, do nothing", "thirst", 0)
+        });
+
+        whereToBuildShelter = new Encounter("Where to build a shelter or sleep", "Where will you build your new shelter and/or sleep?", new Choice[] {
+                new Choice("Under a cliff ledge"),
+                new Choice("Close to the beach", new Result("Shelter destroyed", "You build your shelter by the beach, " +
+                        "but the tide rises, and waves and wind knock it down.", new Choice("Okay", buildShelter))),
+                new Choice("In the woods")
+        });
+        whereToBuildShelter.setDescript("Where will you build your shelter and/or sleep?");
+
+        buildShelter = new Encounter("Build a shelter", "What will you build your new shelter with?", new Choice[] {
+                new Choice("Nothing, you don't need a shelter"),
+                new Choice("Sticks and leaves", whereToBuildShelter),
+                new Choice("Mud, sticks, and leaves", whereToBuildShelter)
+        });
+        buildShelter.setDescript("What will you build your shelter with?");
 
 
 
-        //TODO delete
+
+
+        //TODO delete and adjust the nextEnc() method to select a random enc from the irregEnc arraylist (once it is filled)
         testEnc = new Encounter("omg", "I figured it out", new Choice[] {
                 new Choice("1", "hunger", -5),
                 new Choice("2", "hunger", -5),
@@ -132,26 +189,23 @@ public class GameController {
 
 
 
-        //this looks very messy, but it is just the first encounter of the game, asking what you want to do first.
+        //this looks pretty crazy, but it is just the first encounter of the game, asking what you want to do first.
         firstEnc = new Encounter("Stranded", "You were traveling over the sea when your ship sunk. " +
                 "You swam until you reached land, and you now find yourself stranded alone on the beach of an unknown island.",
                 new Choice[] {
                         new Choice("Build a shelter", buildShelter),
                         new Choice("Get water", getWater),
-                        new Choice("Sit around on the beach and wait to see if a ship comes by", new Encounter(
+                        new Choice("Sit around on the beach and wait for a rescuer", new Result(
                                 "Waiting...", "You wait on the beach for a long while, but nobody comes by.",
-                                new Choice[]{
-                                        new Choice("Get up", new Encounter("What to do next",
-                                                "It doesn't look like anybody is going to come anytime soon.",
-                                                new Choice[]{
-                                                        new Choice("Build a shelter", buildShelter),
-                                                        new Choice("Get water", getWater),
-                                                        new Choice("Get food", findFoodEnc)
-                                                }
-                                        )),
-                                        new Choice(""),
-                                        new Choice("")
-                                }))
+                                new Choice("Get up", new Encounter("What to do next",
+                                        "It doesn't look like anybody is going to come anytime soon.",
+                                        new Choice[]{
+                                                new Choice("Build a shelter", buildShelter),
+                                                new Choice("Get water", getWater),
+                                                new Choice("Get food", findFoodEnc)
+                                        }
+                                        ))
+                                ))
         });
 
         nextEnc(firstEnc);
@@ -162,11 +216,13 @@ public class GameController {
     public void onOpAClick () {
         currentEnc.choose(player, 0);
         Choice[] tempChoices = currentEnc.getChoices();
+
         /*
         if (currentEnc.getChoices()[0].getEncounterImpact() == null) {
             nextEnc();
 
          */
+
         if(tempChoices.length > 0 && tempChoices[0].getEncounterImpact() == null) {
             nextEnc();
         } else {
@@ -241,7 +297,7 @@ public class GameController {
             currentEnc = thirstEnc;
         } else if (player.getHeat() <= 95) {
             currentEnc = hypothermiaEnc;
-        } else if (player.getHeat() <= 100) {
+        } else if (player.getHeat() >= 100) {
             currentEnc = hyperthermiaEnc; //aka overheating
         } else {
             //currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
@@ -264,9 +320,11 @@ public class GameController {
         }
          */
          System.out.println(this.currentEnc);
+
          currentEnc = encounter;
          refreshBars();
          refreshOptions();
+
          System.out.println(this.currentEnc);
      }
 
@@ -309,12 +367,10 @@ public class GameController {
                     originEnc.getChoices()[1],
                     new Choice("Leave it", "hunger", 0) //the replacement for the search inv choice
             });
-            hungerEncNoFoodInv = new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[]{
-                    new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
-                    new Choice("", "hunger", 0),
-                    new Choice("", "hunger", 0)
-            });
-            hungerEncNoFoodInv.setDescript("It looks like you don't have any food stored in your inventory yet.");
+            hungerEncNoFoodInv = new Result("No food in inventory", "It looks like you don't have any food stored in your inventory yet.",
+                    new Choice("Okay", noFoodInvEnc) //returns the user to the original encounter so they can choose to do something else
+            );
+
             /*
             return new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[] {
                     new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
