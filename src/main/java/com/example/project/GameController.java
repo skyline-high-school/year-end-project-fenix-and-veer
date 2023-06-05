@@ -305,7 +305,8 @@ public class GameController {
 
         //picks the next encounter
         if (player.isDead()) {
-            currentEnc = new Encounter("Dead", "You died of " + player.getCauseOfDeath() +".", new Choice[]{
+            currentEnc = new Encounter("Dead", "You died of " + player.getCauseOfDeath() +". " +
+                    "You survived " + numEncounters + " encounters.", new Choice[]{
                     new Choice("Try again", firstEnc),
                     new Choice("Quit", new Encounter("quit", "Quitting Application", new Choice[]{
                             new Choice(""),
@@ -315,6 +316,7 @@ public class GameController {
                     })),
                     new Choice("")
             });
+            numEncounters = 0;
         } else if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
         } else if (player.getHunger() <= triggerAmt) {
@@ -328,6 +330,8 @@ public class GameController {
         } else {
             currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
         }
+
+        numEncounters++;
 
         System.out.println(this.currentEnc);
 
@@ -350,6 +354,7 @@ public class GameController {
             Platform.exit();
         }
         currentEnc = encounter;
+        numEncounters++;
         refreshBars();
         refreshOptions();
 
