@@ -60,7 +60,7 @@ public class GameController {
     private Encounter testEnc;
 
     private Encounter startFire;
-    private Player player = new Player("Feniz"); //TODO change this
+    private Player player = new Player();
     private Popup popup;
     private static final int triggerAmt = 10; //the value at which hp, hunger, or thirst will be considered low enough to warrant an encounter
     private Random rand = new Random();
@@ -313,8 +313,8 @@ public class GameController {
 
         //picks the next encounter
         if (player.isDead()) {
-            currentEnc = new Encounter("dead", "you died of" + player.getCauseOfDeath(), new Choice[]{
-                    new Choice("TryAgain", firstEnc),
+            currentEnc = new Encounter("Dead", "You died of " + player.getCauseOfDeath() +".", new Choice[]{
+                    new Choice("Try again", firstEnc),
                     new Choice("Quit", new Encounter("quit", "Quitting Application", new Choice[]{
                             new Choice(""),
                             new Choice(""),
