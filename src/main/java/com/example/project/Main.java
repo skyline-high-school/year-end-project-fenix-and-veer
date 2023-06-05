@@ -14,6 +14,7 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
 
         //loads stage and first scene
+        System.out.println("reached here");
         Parent root = FXMLLoader.load(getClass().getResource("welcome.fxml"));
         stage.setTitle("Year End Project");
         stage.setScene(new Scene(root));
