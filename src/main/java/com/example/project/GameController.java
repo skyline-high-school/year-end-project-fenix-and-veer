@@ -67,7 +67,6 @@ public class GameController {
     private Encounter bearSight;
 
 
-
     @FXML
     public void initialize() throws InterruptedException {
         player.setHp(8);
@@ -183,22 +182,21 @@ public class GameController {
                 new Choice("Go about your day as usual", "heat", 50)
         });
         startFire = new Encounter("startFire", "How will you try to start a fire?", new Choice[]{
-                new Choice("Rubbing sticks together","heat",0),
-                new Choice("Holding a glass bottle from the beach under the sunlight over some small sticks","heat",20),
-                new Choice("Rubbing rocks together","heat",0)
+                new Choice("Rubbing sticks together", "heat", 0),
+                new Choice("Holding a glass bottle from the beach under the sunlight over some small sticks", "heat", 20),
+                new Choice("Rubbing rocks together", "heat", 0)
         });
         hypothermiaEnc = new Encounter("cold", "It is very cold and raining. What should you do?", new Choice[]{
-                new Choice("Try to start a fire under the cover of your shelter/the cliff ledge",startFire),
-                new Choice("Get some big leaves to use as a blanket","heat",5),
-                new Choice("Stay where you are and huddle in a tight ball","heat",-10)
+                new Choice("Try to start a fire under the cover of your shelter/the cliff ledge", startFire),
+                new Choice("Get some big leaves to use as a blanket", "heat", 5),
+                new Choice("Stay where you are and huddle in a tight ball", "heat", -10)
         });
-
 
 
         bearSight = new Encounter("Bear", "A bear sees you. It has a cub. What will you do?", new Choice[]{
-                new Choice("Try to quietly back away","hp",0),
-                new Choice("Yell loudly at it, waving your arms","hp",0),
-                new Choice("Play dead","hp",-50)
+                new Choice("Try to quietly back away", "hp", 0),
+                new Choice("Yell loudly at it, waving your arms", "hp", 0),
+                new Choice("Play dead", "hp", -50)
         });
         //TODO delete and adjust the nextEnc() method to select a random enc from the irregEnc arraylist (once it is filled)
         testEnc = new Encounter("omg", "I figured it out", new Choice[]{
@@ -314,10 +312,16 @@ public class GameController {
         // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
 
         //picks the next encounter
-        if (player.isDead()){
-            currentEnc=new Encounter("dead","you died of" + player.getCauseOfDeath(), new Choice[]{
-                    new Choice("Try Again",firstEnc),
-                    new Choice("Quit",new Encounter("Quit","Quit")),
+        if (player.isDead()) {
+            currentEnc = new Encounter("dead", "you died of" + player.getCauseOfDeath(), new Choice[]{
+                    new Choice("TryAgain", firstEnc),
+                    new Choice("Quit", new Encounter("quit", "Quitting Application", new Choice[]{
+                            new Choice(""),
+                            new Choice(""),
+                            new Choice("")
+
+                    })),
+                    new Choice("")
             });
         } else if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
@@ -349,10 +353,11 @@ public class GameController {
             refreshOptions();
         }
          */
-        System.out.println(this.currentEnc);
-if(this.currentEnc.getName()=="Quit"){
-    Platform.exit();
-}
+        System.out.println("current Enc is " + this.currentEnc);
+        if (encounter.getName() == "quit") {
+            System.out.println("quitting");
+            Platform.exit();
+        }
         currentEnc = encounter;
         refreshBars();
         refreshOptions();
