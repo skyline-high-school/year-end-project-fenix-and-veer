@@ -35,6 +35,9 @@ public class Encounter {
             player.changeHunger(choices[i].getHungerImpact());
             player.changeThirst(choices[i].getThirstImpact());
             player.changeHeat(choices[i].getHeatImpact());
+            if (choices[i].getInvAdd != null) {
+                player.addToInv(choices[i].getInvAdd);
+            }
         }
     }
 
