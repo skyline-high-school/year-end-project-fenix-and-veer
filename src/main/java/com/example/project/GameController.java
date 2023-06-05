@@ -1,5 +1,6 @@
 package com.example.project;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -313,6 +314,12 @@ public class GameController {
         // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
 
         //picks the next encounter
+        if (player.isDead()){
+            currentEnc=new Encounter("dead","you died of" + player.getCauseOfDeath(), new Choice[]{
+                    new Choice("Try Again",firstEnc),
+                    new Choice("Quit",new Encounter("Quit","Quit")),
+            });
+        }
         if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
         } else if (player.getHunger() <= triggerAmt) {
@@ -344,7 +351,9 @@ public class GameController {
         }
          */
         System.out.println(this.currentEnc);
-
+if(this.currentEnc.getName()=="Quit"){
+    Platform.exit();
+}
         currentEnc = encounter;
         refreshBars();
         refreshOptions();
