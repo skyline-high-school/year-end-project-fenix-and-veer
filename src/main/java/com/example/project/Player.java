@@ -147,11 +147,13 @@ public class Player {
     }
 
     public void addToInv(Object item) {
+        /*
         Encounter encounter = new Encounter("Inventory", "Add " + item.toString() + " to your inventory?", new Choice[]{
                 new Choice("Add", item),
                 new Choice("Don't add"),
                 new Choice("") //TODO change later, I just can't think of a third option right now
         });
+        */
         this.inv.add(item);
     }
 
