@@ -56,16 +56,15 @@ public class GameController {
     private Encounter whereToBuildShelter;
     private Encounter getWater;
 
+    //TODO delete
+    private Encounter testEnc;
+
     private Encounter startFire;
-    private Player player = new Player();
+    private Player player = new Player("Feniz"); //TODO change this
     private Popup popup;
     private static final int triggerAmt = 10; //the value at which hp, hunger, or thirst will be considered low enough to warrant an encounter
     private Random rand = new Random();
     private Encounter bearSight;
-    private Encounter deadEnc;
-
-
-
 
 
     @FXML
@@ -123,7 +122,7 @@ public class GameController {
         });
 
         thirstEnc = new Encounter("Dehydration", "You are thirsty and dehydrated.", new Choice[]{
-                new Choice("Drink some water straight from the sea", "thirst", -10),
+                new Choice("Drink some water straight from the sea"),
                 new Choice("Get water from the sea, boil it in a makeshift pot, and then drink it", new Encounter(
                         "A makeshift pot", "You want to boil some water. What will you use to make a pot?",
                         new Choice[]{
@@ -183,22 +182,27 @@ public class GameController {
                 new Choice("Go about your day as usual", "heat", 50)
         });
         startFire = new Encounter("startFire", "How will you try to start a fire?", new Choice[]{
-                new Choice("Rubbing sticks together","heat",0),
-                new Choice("Holding a glass bottle from the beach under the sunlight over some small sticks","heat",20),
-                new Choice("Rubbing rocks together","heat",0)
+                new Choice("Rubbing sticks together", "heat", 0),
+                new Choice("Holding a glass bottle from the beach under the sunlight over some small sticks", "heat", 20),
+                new Choice("Rubbing rocks together", "heat", 0)
         });
         hypothermiaEnc = new Encounter("cold", "It is very cold and raining. What should you do?", new Choice[]{
-                new Choice("Try to start a fire under the cover of your shelter/the cliff ledge",startFire),
-                new Choice("Get some big leaves to use as a blanket","heat",5),
-                new Choice("Stay where you are and huddle in a tight ball","heat",-10)
+                new Choice("Try to start a fire under the cover of your shelter/the cliff ledge", startFire),
+                new Choice("Get some big leaves to use as a blanket", "heat", 5),
+                new Choice("Stay where you are and huddle in a tight ball", "heat", -10)
         });
-
 
 
         bearSight = new Encounter("Bear", "A bear sees you. It has a cub. What will you do?", new Choice[]{
-                new Choice("Try to quietly back away","hp",0),
-                new Choice("Yell loudly at it, waving your arms","hp",0),
-                new Choice("Play dead","hp",-50)
+                new Choice("Try to quietly back away", "hp", 0),
+                new Choice("Yell loudly at it, waving your arms", "hp", 0),
+                new Choice("Play dead", "hp", -50)
+        });
+        //TODO delete and adjust the nextEnc() method to select a random enc from the irregEnc arraylist (once it is filled)
+        testEnc = new Encounter("omg", "I figured it out", new Choice[]{
+                new Choice("1", "hunger", -5),
+                new Choice("2", "hunger", -5),
+                new Choice("3", "hunger", -5)
         });
 
         irregEnc.add(bearSight);
@@ -206,7 +210,6 @@ public class GameController {
         irregEnc.add(hypothermiaEnc);
         irregEnc.add(hungerEnc);
         irregEnc.add(thirstEnc);
-
 
         //this looks pretty crazy, but it is just the first encounter of the game, asking what you want to do first.
         firstEnc = new Encounter("Stranded", "You were traveling over the sea when your ship sunk. " +
@@ -226,12 +229,6 @@ public class GameController {
                                 ))
                         ))
                 });
-
-        deadEnc = new Encounter("Dead","You died of " + player.getCauseOfDeath() + ".", new Choice[]{
-                new Choice("Try Again", firstEnc),
-                new Choice("Quit"),
-                new Choice("")
-        });
 
         nextEnc(firstEnc);
         popup = new Popup(dialogPane);
@@ -315,9 +312,17 @@ public class GameController {
         // otherwise, a random encounter from the irregular encounters ArrayList will be chosen instead
 
         //picks the next encounter
-        if (player.isDead()){
-            currentEnc=deadEnc;
-            deadEnc.setDescript("You died of " + player.getCauseOfDeath() + ". What will you do?");
+        if (player.isDead()) {
+            currentEnc = new Encounter("dead", "you died of" + player.getCauseOfDeath(), new Choice[]{
+                    new Choice("TryAgain", firstEnc),
+                    new Choice("Quit", new Encounter("quit", "Quitting Application", new Choice[]{
+                            new Choice(""),
+                            new Choice(""),
+                            new Choice("")
+
+                    })),
+                    new Choice("")
+            });
         } else if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
         } else if (player.getHunger() <= triggerAmt) {
@@ -330,11 +335,10 @@ public class GameController {
             currentEnc = hyperthermiaEnc; //aka overheating
         } else {
             currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
+            // currentEnc = testEnc;
         }
 
         System.out.println(this.currentEnc);
-
-        numEncounters++;
 
         refreshBars();
         refreshOptions();
@@ -349,14 +353,11 @@ public class GameController {
             refreshOptions();
         }
          */
-        System.out.println(this.currentEnc);
-        /* MOVED TO ENCOUNTER CLASS CHOOSE() METHOD
-        if(this.currentEnc.getName()=="Quit"){
+        System.out.println("current Enc is " + this.currentEnc);
+        if (encounter.getName() == "quit") {
+            System.out.println("quitting");
             Platform.exit();
         }
-
-         */
-        numEncounters++;
         currentEnc = encounter;
         refreshBars();
         refreshOptions();
@@ -398,15 +399,23 @@ public class GameController {
         if (originEnc == null) {
             throw new IllegalArgumentException();
         } else if (player.getFoodInv() == null || player.getFoodInv().isEmpty()) {
-            noFoodInvEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
-                    new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]),
-                    new Choice("Go fishing with a makeshift spear", "hunger", 19),
-                    new Choice("Wait", "hunger", 0) //the replacement for the search inv choice
+            noFoodInvEnc = new Encounter(originEnc.getName(), originEnc.getDescript(), new Choice[]{
+                    originEnc.getChoices()[0],
+                    originEnc.getChoices()[1],
+                    new Choice("Leave it", "hunger", 0) //the replacement for the search inv choice
             });
             hungerEncNoFoodInv = new Result("No food in inventory", "It looks like you don't have any food stored in your inventory yet.",
                     new Choice("Okay", noFoodInvEnc) //returns the user to the original encounter so they can choose to do something else
             );
 
+            /*
+            return new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[] {
+                    new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
+                    new Choice(""),
+                    new Choice("")
+            });
+
+             */
             return hungerEncNoFoodInv;
         } else {
             searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getFoodInv().toString());
