@@ -56,9 +56,6 @@ public class GameController {
     private Encounter whereToBuildShelter;
     private Encounter getWater;
 
-    //TODO delete
-    private Encounter testEnc;
-
     private Encounter startFire;
     private Player player = new Player();
     private Popup popup;
@@ -176,17 +173,17 @@ public class GameController {
         });
         buildShelter.setDescript("What will you build your shelter with?");
 
-        hyperthermiaEnc = new Encounter("hot", "It is very hot out. What will you do?", new Choice[]{
+        hyperthermiaEnc = new Encounter("Hot", "It is very hot out. What will you do?", new Choice[]{
                 new Choice("Stay in the water", "heat", -10),
                 new Choice("Stay in the shady woods", "heat", -5),
                 new Choice("Go about your day as usual", "heat", 50)
         });
-        startFire = new Encounter("startFire", "How will you try to start a fire?", new Choice[]{
+        startFire = new Encounter("Start fire", "How will you try to start a fire?", new Choice[]{
                 new Choice("Rubbing sticks together", "heat", 0),
                 new Choice("Holding a glass bottle from the beach under the sunlight over some small sticks", "heat", 20),
                 new Choice("Rubbing rocks together", "heat", 0)
         });
-        hypothermiaEnc = new Encounter("cold", "It is very cold and raining. What should you do?", new Choice[]{
+        hypothermiaEnc = new Encounter("Cold", "It is very cold and raining. What should you do?", new Choice[]{
                 new Choice("Try to start a fire under the cover of your shelter/the cliff ledge", startFire),
                 new Choice("Get some big leaves to use as a blanket", "heat", 5),
                 new Choice("Stay where you are and huddle in a tight ball", "heat", -10)
@@ -198,12 +195,7 @@ public class GameController {
                 new Choice("Yell loudly at it, waving your arms", "hp", 0),
                 new Choice("Play dead", "hp", -50)
         });
-        //TODO delete and adjust the nextEnc() method to select a random enc from the irregEnc arraylist (once it is filled)
-        testEnc = new Encounter("omg", "I figured it out", new Choice[]{
-                new Choice("1", "hunger", -5),
-                new Choice("2", "hunger", -5),
-                new Choice("3", "hunger", -5)
-        });
+
 
         irregEnc.add(bearSight);
         irregEnc.add(hyperthermiaEnc);
@@ -335,7 +327,6 @@ public class GameController {
             currentEnc = hyperthermiaEnc; //aka overheating
         } else {
             currentEnc = irregEnc.get(rand.nextInt(irregEnc.size())); //picks a random encounter from the irregular encounters array
-            // currentEnc = testEnc;
         }
 
         System.out.println(this.currentEnc);
@@ -380,7 +371,7 @@ public class GameController {
         hpBar.setProgress((double) player.getHp() / 20); //converts the hp ratio out of the max 20 to a number between 0 and 1, which the progressBar is based on
         hungerBar.setProgress((double) player.getHunger() / 20);
         thirstBar.setProgress((double) player.getThirst() / 20);
-        bodyHeatBar.setProgress((double) player.getHeat() / 20);
+        bodyHeatBar.setProgress((double) (player.getHeat() - 94) / 10);
     }
 
 
@@ -399,23 +390,15 @@ public class GameController {
         if (originEnc == null) {
             throw new IllegalArgumentException();
         } else if (player.getFoodInv() == null || player.getFoodInv().isEmpty()) {
-            noFoodInvEnc = new Encounter(originEnc.getName(), originEnc.getDescript(), new Choice[]{
-                    originEnc.getChoices()[0],
-                    originEnc.getChoices()[1],
-                    new Choice("Leave it", "hunger", 0) //the replacement for the search inv choice
+            noFoodInvEnc = new Encounter("Find food", "You want to look for food.", new Choice[]{
+                    new Choice("Look in the woods", woodsSearchEncounters[rand.nextInt(woodsSearchEncounters.length)]),
+                    new Choice("Go fishing with a makeshift spear", "hunger", 19),
+                    new Choice("Wait", "hunger", 0) //the replacement for the search inv choice
             });
             hungerEncNoFoodInv = new Result("No food in inventory", "It looks like you don't have any food stored in your inventory yet.",
                     new Choice("Okay", noFoodInvEnc) //returns the user to the original encounter so they can choose to do something else
             );
 
-            /*
-            return new Encounter("No food in inventory", "It looks like you don't have any food stored in your inventory yet.", new Choice[] {
-                    new Choice("Okay", noFoodInvEnc), //returns the user to the original encounter so they can choose to do something else
-                    new Choice(""),
-                    new Choice("")
-            });
-
-             */
             return hungerEncNoFoodInv;
         } else {
             searchInvForFood = new Encounter("Search inventory", "Your inventory includes: " + player.getFoodInv().toString());
