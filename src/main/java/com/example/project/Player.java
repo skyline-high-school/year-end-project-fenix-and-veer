@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Player {
 
 
-    private String name;
+    //private String name;
     private int hunger;
     private int thirst;
     private int hp; //health
@@ -17,8 +17,8 @@ public class Player {
     private boolean dead;
     private String causeOfDeath;
 
-    public Player(String name) {
-        this.name = name;
+    public Player() {
+        //this.name = name;
         hunger = 20;
         thirst = 20;
         hp = 20;
@@ -51,6 +51,7 @@ public class Player {
         this.hp = hp;
     }
 
+    /*
     public String getName() {
         return name;
     }
@@ -58,6 +59,8 @@ public class Player {
     public void setName(String name) {
         this.name = name;
     }
+
+     */
 
     public ArrayList<Object> getInv() {
         return inv;
@@ -150,5 +153,14 @@ public class Player {
                 new Choice("") //TODO change later, I just can't think of a third option right now
         });
         this.inv.add(item);
+    }
+
+    public void resetStats() {
+        hunger = 20;
+        thirst = 20;
+        hp = 20;
+        heat = 98; //in degrees F
+        inv = new ArrayList<>(); //max items the user can carry = 10
+        dead = false;
     }
 }

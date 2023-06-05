@@ -5,8 +5,8 @@ public class Choice {
 
     private String text = "";
     private int hpImpact = 0;
-    private int hungerImpact = 0;
-    private int thirstImpact = 0;
+    private int hungerImpact = -1;
+    private int thirstImpact = -2;
     private int heatImpact = 0;
     private Encounter encounterImpact; //for when selecting a choice sets another encounter into motion
     private Object invAdd; //object to be added to the inventory as an impact of the choice (if selected)
@@ -19,13 +19,13 @@ public class Choice {
     public Choice(String text, String impact, int impactAmt) {
         this.text = text;
 
-        if(impact.equals("hp")) {
+        if(impact.equalsIgnoreCase("hp")) {
             this.hpImpact = impactAmt;
-        } else if(impact.equals("hunger")) {
+        } else if(impact.equalsIgnoreCase("hunger")) {
             this.hungerImpact = impactAmt;
-        } else if(impact.equals("thirst")) {
+        } else if(impact.equalsIgnoreCase("thirst")) {
             this.thirstImpact = impactAmt;
-        } else if(impact.equals("heat")) {
+        } else if(impact.equalsIgnoreCase("heat")) {
             this.heatImpact = impactAmt;
         } else {
             throw new IllegalArgumentException("Your impact String must be either hp, hunger, thirst, or heat");

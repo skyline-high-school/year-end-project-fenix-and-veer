@@ -1,5 +1,7 @@
 package com.example.project;
 
+import javafx.application.Platform;
+
 public class Encounter {
 
     private String name; //a title/header for the dialogPane giving a very brief description of the encounter
@@ -23,10 +25,17 @@ public class Encounter {
 
     public void choose(Player player, int i) { //i = index of the choice in the Choices Array
         choices[i].setChosen(true);
-        player.changeHp(choices[i].getHpImpact());
-        player.changeHunger(choices[i].getHungerImpact());
-        player.changeThirst(choices[i].getThirstImpact());
-        player.changeHeat(choices[i].getHeatImpact());
+
+        if(choices[i].getText().equalsIgnoreCase("try again")) {
+            player.resetStats();
+        } else if (choices[i].getText().equalsIgnoreCase("quit")) {
+            Platform.exit();
+        } else {
+            player.changeHp(choices[i].getHpImpact());
+            player.changeHunger(choices[i].getHungerImpact());
+            player.changeThirst(choices[i].getThirstImpact());
+            player.changeHeat(choices[i].getHeatImpact());
+        }
     }
 
     public String getName() {
