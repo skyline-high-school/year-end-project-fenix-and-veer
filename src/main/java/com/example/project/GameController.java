@@ -319,8 +319,7 @@ public class GameController {
                     new Choice("Try Again",firstEnc),
                     new Choice("Quit",new Encounter("Quit","Quit")),
             });
-        }
-        if (player.getHp() <= triggerAmt) {
+        } else if (player.getHp() <= triggerAmt) {
             currentEnc = hpEnc;
         } else if (player.getHunger() <= triggerAmt) {
             currentEnc = hungerEnc;
